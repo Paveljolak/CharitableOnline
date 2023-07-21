@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer>
     <img src={Img1} alt="" />
-    <span>Kureto moe e golemo. </span>
+    <span>This is the footer text.</span>
     </footer>
   )
 }
