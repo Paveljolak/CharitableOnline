@@ -1,29 +1,70 @@
-import React from 'react'
-import Edit from '../img/edit.png'
-import Delete from '../img/delete.png'
-import { Link } from "react-router-dom"; 
-import Menu from '../components/Menu.jsx'
+import React, { useEffect, useState } from "react";
+import Edit from "../img/edit.png";
+import Delete from "../img/delete.png";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Menu from "../components/Menu";
+import axios from "axios";
+import moment from "moment";
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
 
 export const Single = () => {
+
+  const [post, setPost] = useState({});
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const postId = location.pathname.split("/")[2]
+
+  const {currentUser} = useContext(AuthContext)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`/posts/${postId}`);
+        setPost(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [postId]);
+
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/posts/${postId}`);
+      navigate("/")
+    } catch (err) {
+      console.log(err);
+    };
+  };
+
   return (
     <div className='single'>
       <div className="content">
-        <img src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_square.jpg" alt="" />
+        <img  
+           src={post?.img}
+           alt="" 
+        />
         <div className="user">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNbxq97rBfft242YUVOKCbGf3KuJVv7zuhMIDmacA&s" alt="" />
+          {post.userImage && <img src={post.userImage} alt="" /> }
+ 
           <div className="info">
-            <span>John</span>
-            <p>Posted 2 days ago.</p>
+            <span>{post?.username}</span>
+            <p>Posted {moment(post.date).fromNow()}</p>
           </div>
-          <div className="edit">
-            <Link to={`/write?edit=2`}>
-              <img src={Edit} alt="" />
-            </Link>
-            <img src={Delete} alt="" />
-          </div>
+          {currentUser?.username === post?.username && (<div className="edit">
+              <Link to={`/write?edit=2`}>
+                <img src={Edit} alt="" />
+              </Link>
+              <img onClick={handleDelete} src={Delete} alt="" />
+            </div>
+          )}
         </div>
-        <h1>Lorem IPSUM blbalbalbalbalblablalablalablalbalbla</h1>
-        <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+        <h1>{post.title}</h1>
+          {post.description} 
       </div>
       <Menu />
     </div>
