@@ -7,17 +7,17 @@ import axios from "axios";
 import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
+import DOMPurify from "dompurify";
 
-export const Single = () => {
-
+const Single = () => {
   const [post, setPost] = useState({});
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const postId = location.pathname.split("/")[2]
+  const postId = location.pathname.split("/")[2];
 
-  const {currentUser} = useContext(AuthContext)
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,32 +31,33 @@ export const Single = () => {
     fetchData();
   }, [postId]);
 
-
-  const handleDelete = async () => {
+  const handleDelete = async ()=>{
     try {
       await axios.delete(`/posts/${postId}`);
       navigate("/")
     } catch (err) {
       console.log(err);
-    };
-  };
+    }
+  }
+
+ 
 
   return (
-    <div className='single'>
+    <div className="single">
       <div className="content">
-        <img  
-           src={post?.img}
-           alt="" 
-        />
+        <img src={`../upload/${post?.img}`} alt="" />
         <div className="user">
-          {post.userImage && <img src={post.userImage} alt="" /> }
- 
+          {post.userImg && <img
+            src={post.userImg}
+            alt=""
+          />}
           <div className="info">
-            <span>{post?.username}</span>
+            <span>{post.username}</span>
             <p>Posted {moment(post.date).fromNow()}</p>
           </div>
-          {currentUser?.username === post?.username && (<div className="edit">
-              <Link to={`/write?edit=2`}>
+          {currentUser.username === post.username && (
+            <div className="edit">
+              <Link to={`/write?edit=2`} state={post}>
                 <img src={Edit} alt="" />
               </Link>
               <img onClick={handleDelete} src={Delete} alt="" />
@@ -64,11 +65,14 @@ export const Single = () => {
           )}
         </div>
         <h1>{post.title}</h1>
-          {post.description} 
-      </div>
-      <Menu />
+        <p
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(post.description),
+          }}
+        ></p>      </div>
+      <Menu cat={post.cat}/>
     </div>
-  )
-}
+  );
+};
 
 export default Single;
