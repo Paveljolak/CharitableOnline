@@ -1,7 +1,6 @@
 import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import DOMPurify from "dompurify";
 
@@ -10,12 +9,25 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
 
   const cat = useLocation().search
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(`/posts${cat}`);
-        setPosts(res.data);
+        const searchValue = searchParams.get("search")
+        
+        if (searchValue){
+          //const result = res.data.filter(p => p.title === searchValue)
+          const result = res.data.filter(p => p.title.toLowerCase().includes(searchValue.toLowerCase()))
+          console.log(searchValue.includes("test"))
+          console.log(result)
+          setPosts(result);
+
+        }else{
+          setPosts(res.data);
+        }
+        
       } catch (err) {
         console.log(err);
       }

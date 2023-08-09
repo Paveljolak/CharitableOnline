@@ -14,8 +14,6 @@ export const getPosts = (req, res)=>{
 
         return res.status(200).json(data);
     });
-
-
 };
   
 
@@ -43,21 +41,21 @@ export const addPost = (req, res) => {
       const q =
   "INSERT INTO posts (`title`, `description`, `img`, `cat`, `date`, `user_id`) VALUES ?";
 
-const values = [
-  [
-    req.body.title,
-    req.body.description,
-    req.body.img,
-    req.body.cat,
-    req.body.date, // Make sure this is a correctly formatted date string
-    userInfo.id,
-  ],
-];
+    const values = [
+      [
+        req.body.title,
+        req.body.description,
+        req.body.img,
+        req.body.cat,
+        req.body.date, // Make sure this is a correctly formatted date string
+        userInfo.id,
+      ],
+    ];
 
-db.query(q, [values], (err, data) => {
-  if (err) return res.status(500).json(err);
-  return res.json("Post has been created.");
-});
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json("Post has been created.");
+    });
 
     });
   };
@@ -82,7 +80,7 @@ export const deletePost = (req, res)=>{
             })
         })
 
-}
+};
 
 
 
@@ -106,3 +104,5 @@ export const updatePost = (req, res)=>{
     });
   });
 };
+
+

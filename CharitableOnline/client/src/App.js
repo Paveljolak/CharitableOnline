@@ -18,6 +18,8 @@ import "./style.scss"
 
 
 
+
+
 const Layout = () => {
   return (
     <>
@@ -45,6 +47,7 @@ const router = createBrowserRouter([
         path:"/write",
         element:<Write/> 
       },
+    
     ]
   },
   {

@@ -38,13 +38,13 @@ export const Write = () => {
     state
     ? await axios.put(`/posts/${state.id}`, {
         title,
-        description: value, // Fixed typo here
+        description: value, 
         cat,
         img: file ? imgUrl : "",
       })
     : await axios.post(`/posts/`, {
         title,
-        description: value, // Fixed typo here
+        description: value, 
         cat,
         img: file ? imgUrl : "",
         date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),

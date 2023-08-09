@@ -1,23 +1,60 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState, useEffect } from "react";
+import { Link, useNavigate, useLocation, useSearchParams  } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import Img1 from "../img/img1.png"
+import axios from "axios";
 
 const Navbar = () => {
 
   const {currentUser, logout} = useContext(AuthContext); 
+  //const {searchValue} = useState("");
+  let searchValue1 = "";
+  const navigate = useNavigate();
+ 
+
+
+
+  const searchValueChanged = (e) => {
+    searchValue1 = e.target.value
+  }
+  
+  
+  const handleSearch = () => {
+
+    console.log(searchValue1)
+    navigate(`/?search=${searchValue1}`)
+
+  }
+
+ 
+
+
+
+  
+
+  
   
   return (
     <div className='navbar'>
       <div className="container">
+
         <div className="logo">
           <Link to="/">
             <img src={Img1} alt="" />
 
           </Link>
-
         </div>
+
         <div className="links">
+          
+        
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={searchValueChanged}
+              />
+              <button type="submit" onClick={handleSearch} >Search</button>
+          
           <Link className="link" to="/?cat=art">
             <h5>ART</h5>
           </Link>
