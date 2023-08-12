@@ -69,6 +69,12 @@ $lightGreen: #b9e7e7;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        
+        button.link {
+          border: 0;
+          background-color: transparent;
+          font-weight: 900; 
+        }
         .logo {
           img {
             width: 120px;

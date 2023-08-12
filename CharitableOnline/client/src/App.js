@@ -11,6 +11,9 @@ import Login from "./pages/Login"
 import Single from "./pages/Single"
 import Write from "./pages/Write"
 import Home from "./pages/Home"
+import WriteCategory from "./pages/WriteCategory"
+import Categories from "./pages/Categories"
+import CategoriesSingle from "./pages/CategoriesSingle"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import "./style.scss"
@@ -46,6 +49,18 @@ const router = createBrowserRouter([
       {
         path:"/write",
         element:<Write/> 
+      },
+      {
+        path:"/writecategory",
+        element:<WriteCategory/> 
+      },
+      {
+        path:"/categories",
+        element:<Categories /> 
+      },
+      {
+        path:"/categories/:id",
+        element:<CategoriesSingle /> 
       },
     
     ]

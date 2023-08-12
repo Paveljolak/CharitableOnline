@@ -10,7 +10,7 @@ const Navbar = () => {
   //const {searchValue} = useState("");
   let searchValue1 = "";
   const navigate = useNavigate();
- 
+  const location = useLocation();
 
 
 
@@ -20,19 +20,22 @@ const Navbar = () => {
   
   
   const handleSearch = () => {
-
-    console.log(searchValue1)
-    navigate(`/?search=${searchValue1}`)
+    
+    navigate(`${location.pathname}?search=${searchValue1}`)
 
   }
 
- 
+  const handleWrite = () => {
+    
+      console.log(location.pathname)
+      if(location.pathname.includes("categories")){
+        navigate("/writeCategory")
+      }else{
+        navigate("/write")
+      }
 
+  }
 
-
-  
-
-  
   
   return (
     <div className='navbar'>
@@ -55,29 +58,20 @@ const Navbar = () => {
               />
               <button type="submit" onClick={handleSearch} >Search</button>
           
-          <Link className="link" to="/?cat=art">
-            <h5>ART</h5>
+
+          <Link className="link" to="/">
+            <h5>Posts</h5>
           </Link>
-          <Link className="link" to="/?cat=science">
-            <h5>SCIENCE</h5>
+          <Link className="link" to="/categories">
+            <h5>Categories</h5>
           </Link>
-          <Link className="link" to="/?cat=technology">
-            <h5>TECHOLOGY</h5>
-          </Link>
-          <Link className="link" to="/?cat=cinema">
-            <h5>CINEMA</h5>
-          </Link>
-          <Link className="link" to="/?cat=design">
-            <h5>DESIGN</h5>
-          </Link>
-          <Link className="link" to="/?cat=food">
-            <h5>FOOD</h5>
-          </Link>
+          
+         
           <span>{currentUser?.username}</span>
           {currentUser ? (
           <span onClick={logout}>Logout</span> ) : ( <Link className="link" to="/login">Login</Link> )}
           <span className="write">
-            <Link className="link" to="/write">Write</Link>
+            <button onClick={(handleWrite)} className="link">Write </button>
           </span>
         </div>
       </div>
