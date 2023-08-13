@@ -19,12 +19,21 @@ const Single = () => {
 
   const { currentUser } = useContext(AuthContext);
 
+  const [comments, setComments] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(`/posts/${postId}`);
         setPost(res.data);
-        console.log(res.data)
+      } catch (err) {
+        console.log(err);
+      }
+
+      try {
+        const res = await axios.get(`/posts/comments/${postId}`);
+        setComments(res.data);
+        console.log(comments);
       } catch (err) {
         console.log(err);
       }
@@ -32,27 +41,36 @@ const Single = () => {
     fetchData();
   }, [postId]);
 
-  const handleDelete = async ()=>{
+  const handleDelete = async () => {
     try {
       await axios.delete(`/posts/${postId}`);
-      navigate("/")
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
- 
+  const handleCommentDelete = async (commentId) => {
+    try {
+      await axios.delete(`/posts/comment/${commentId}`);
+      window.location.reload(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent;
+  };
 
   return (
     <div className="single">
       <div className="content">
         <img src={`../upload/${post?.img}`} alt="" />
         <div className="user">
-          {post.userImg && <img
-            src={post.userImg}
-            alt=""
-          />}
-          <div className="info">  
+          {post.userImg && <img src={post.userImg} alt="" />}
+          <div className="info">
             <span>{post?.username}</span>
             <p>Posted {moment(post.date).fromNow()}</p>
           </div>
@@ -70,8 +88,48 @@ const Single = () => {
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(post.description),
           }}
-        ></p>      </div>
-      <Menu cat={post.cat}/>
+        ></p>
+
+        <div className="comments">
+          <h3>
+            COMMENTS:
+            <Link to={`/posts/${postId}/writeComment`}> Write Comment </Link>
+          </h3>
+
+          {comments.map((comment) => (
+            <div key={comment.id}>
+              <div className="commentBody">
+                <div className="comment">
+                  <div className="content">
+                    <p>{getText(comment.body)}</p>
+                  </div>
+                </div>
+              </div>
+              <h4>
+                {comment.username}{" "}
+                {currentUser?.id === comment?.Comuser_id && (
+                  <div className="EditDelete">
+                    <Link
+                      to={`/posts/${postId}/writeComment?edit=2`}
+                      state={comment}
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleCommentDelete(comment.id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </h4>
+            </div>
+          ))}
+        </div>
+      </div>
+      <Menu cat={post.cat} />
     </div>
   );
 };

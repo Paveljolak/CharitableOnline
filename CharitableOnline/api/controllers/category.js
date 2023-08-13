@@ -89,6 +89,9 @@ export const deleteCategory = (req, res)=>{
         const categoryId = req.params.id
         const q = "DELETE FROM categories WHERE id = ? AND Cuser_id = ? "
 
+    //     const q1 = req.query.cat ? "DELETE * FROM posts AS p, categories AS c WHERE p.category_id = c.id" 
+    // : "DELETE * FROM categories WHERE id = ?";
+
         db.query(q, [categoryId, userInfo.id], (err, data) => {
             console.log(err)
             if(err) return res.status(403).json("You can delete only your categories!")
