@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import Ratings from "react-ratings-declarative";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -14,7 +15,7 @@ const Home = () => {
       try {
         const res = await axios.get(`/posts${cat}`);
         const searchValue = searchParams.get("search");
-
+        console.log(res.data);
         if (searchValue) {
           //const result = res.data.filter(p => p.title === searchValue)
           const result = res.data.filter((p) =>
@@ -50,7 +51,20 @@ const Home = () => {
                 <h1>{post.title}</h1>
               </Link>
               <p>{getText(post.description)}</p>
-              <button>Read more</button>
+              <div className="ratings">
+                <h3>Post rating: </h3>
+                <Ratings
+                  rating={post?.average ? post.average : 0}
+                  widgetDimensions="35px"
+                  widgetSpacings="15px"
+                >
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                  <Ratings.Widget />
+                </Ratings>
+              </div>
             </div>
           </div>
         ))}

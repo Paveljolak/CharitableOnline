@@ -17,8 +17,6 @@ export const WriteComment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(postId);
-
     try {
       state
         ? await axios.put(`/posts/comment/${state?.id}`, {

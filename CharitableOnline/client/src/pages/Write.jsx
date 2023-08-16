@@ -41,7 +41,7 @@ export const Write = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const imgUrl = await upload();
-    console.log(file);
+    console.log(imgUrl);
     try {
       state
         ? await axios.put(`/posts/${state.id}`, {

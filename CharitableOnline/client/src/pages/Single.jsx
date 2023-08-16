@@ -8,8 +8,10 @@ import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import DOMPurify from "dompurify";
+import Ratings from "react-ratings-declarative";
 
 const Single = () => {
+  window.scrollTo(0, 0);
   const [post, setPost] = useState({});
 
   const location = useLocation();
@@ -21,6 +23,12 @@ const Single = () => {
 
   const [comments, setComments] = useState([]);
 
+  const [hasUserGivenRating, sethasUserGivenRating] = useState(false);
+
+  const [userRating, setUserRating] = useState(0);
+
+  const [userRatingId, setUserRatingId] = useState(-1);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,10 +38,23 @@ const Single = () => {
         console.log(err);
       }
 
+      // Comments:
       try {
         const res = await axios.get(`/posts/comments/${postId}`);
         setComments(res.data);
-        console.log(comments);
+      } catch (err) {
+        console.log(err);
+      }
+
+      // Ratings:
+      try {
+        const res = await axios.get(`/posts/userRating/${postId}`);
+        if (res.data) {
+          sethasUserGivenRating(true);
+
+          setUserRatingId(res.data.id);
+          setUserRating(res.data.stars);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -64,6 +85,30 @@ const Single = () => {
     return doc.body.textContent;
   };
 
+  const setNewRating = async (rating) => {
+    try {
+      if (hasUserGivenRating) {
+        await axios.put(`/posts/rating/${userRatingId}`, {
+          stars: rating,
+          date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+        });
+      } else {
+        const result = await axios.post(`/posts/rating/${postId}`, {
+          stars: rating,
+          date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+        });
+
+        setUserRatingId(result.data.insertId);
+        sethasUserGivenRating(true);
+        console.log(result);
+      }
+
+      setUserRating(rating);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="single">
       <div className="content">
@@ -90,10 +135,30 @@ const Single = () => {
           }}
         ></p>
 
+        {currentUser !== null && currentUser !== undefined && (
+          <div className="ratings">
+            <h3>Your rating: </h3>
+            <Ratings
+              rating={userRating}
+              widgetDimensions="35px"
+              widgetSpacings="15px"
+              changeRating={setNewRating}
+            >
+              <Ratings.Widget />
+              <Ratings.Widget />
+              <Ratings.Widget />
+              <Ratings.Widget />
+              <Ratings.Widget />
+            </Ratings>
+          </div>
+        )}
+
         <div className="comments">
           <h3>
             COMMENTS:
-            <Link to={`/posts/${postId}/writeComment`}> Write Comment </Link>
+            {currentUser !== null && currentUser !== undefined && (
+              <Link to={`/posts/${postId}/writeComment`}> Write Comment </Link>
+            )}
           </h3>
 
           {comments.map((comment) => (

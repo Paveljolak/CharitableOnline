@@ -286,7 +286,7 @@ $lightGreen: #b9e7e7;
         flex: 2;
         display: flex;
         flex-direction: column;
-        gap: 25px;
+        gap: 20px;
 
         h1 {
           font-size: 20px;
@@ -296,7 +296,7 @@ $lightGreen: #b9e7e7;
         .post {
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 5px;
 
           img {
             width: 100%;
@@ -308,22 +308,16 @@ $lightGreen: #b9e7e7;
             color: #555;
           }
 
-          button {
+          .ratingsInMenu {
             width: max-content;
             padding: 7.5px 15px;
-            border: none;
-            cursor: pointer;
-            color: teal;
-            background-color: white;
-            border: 1px solid teal;
-
-            &:hover {
-              border: 1px solid white;
-              background-color: $lightGreen;
-              color: black;
-            }
           }
         }
+      }
+
+      .ratingsInMenu {
+        margin-bottom: 40px;
+        padding-bottom: 10px;
       }
     }
 
